@@ -23,9 +23,15 @@ module.exports = {
           }
 
           var data = req.body['item[]'];
+          console.log(data);
           if(typeof data === 'string') {
               connection.query(cate_model.insert, [data, 0, 0], function (err, result) {
-                  console.log(err);
+                  if(err) {
+                      return res.json({
+                          code: '-1',
+                          msg: 'insert error.'
+                      })
+                  }
                   if (result) {
                       result = {
                           code: 200,
@@ -38,7 +44,14 @@ module.exports = {
           } else {
               for (var i=0; i<data.length; i++) {
                   var name = data[i];
-                  connection.query(cate_model.insert, [name, 0, 0]);
+                  connection.query(cate_model.insert, [name, 0, 0], function (err, resule) {
+                      if(err) {
+                          return res.json({
+                              code: '-1',
+                              msg: 'insert error.'
+                          })
+                      }
+                  });
                   if( i === (data.length-1)) {
                       var result = {
                           code: 200,
